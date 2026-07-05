@@ -31,10 +31,13 @@ work = {}
 
 for e, ch in employees:
     for pro, h, pri in projects:
-        work[(e,pro)] = model.new_int_var(3,h,f"{e}_{pro}")
+        work[(e,pro)] = model.new_int_var(0,h,f"{e}_{pro}")
 
 for e, ch in employees:
     model.add(sum(work[(e,pro)] for pro, h, pri in projects) <= ch)
+
+for pro,h,pri in projects:
+    model.add(sum(work[(e,pro)] for e, ch in employees) == h)
 
 #model.maximize(sum(work[("Ana",projects[i][0])] for i in range(len(projects))))
 
@@ -51,7 +54,8 @@ if status == cp_model.OPTIMAL:
         
         
     print(solver.ObjectiveValue())
-
+else:
+    print("No solution!")
 exit()
 
 
